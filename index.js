@@ -13,6 +13,7 @@ fs.readFile('./test.html', 'utf8', (err, htmlData) => {
 
   // 查找所有的ytd-playlist-panel-video-renderer元素
   const videos = [];
+  const urls = [];    // 用于存储URL的数组
   $('#playlist-items').each((index, element) => {
     const $element = $(element);
     const image = $element.find('img').attr('src');
@@ -33,6 +34,8 @@ fs.readFile('./test.html', 'utf8', (err, htmlData) => {
       title,
       time: timeInSeconds
     });
+
+    urls.push(url);
   });
 
   // 将提取的信息保存到JSON文件
@@ -41,6 +44,15 @@ fs.readFile('./test.html', 'utf8', (err, htmlData) => {
       console.error('Error writing the JSON file:', err);
     } else {
       console.log('JSON file has been saved.');
+    }
+  });
+  
+  // 将所有URL保存到txt文件，每个URL一行
+  fs.writeFile('urls.txt', urls.join('\n'), (err) => {
+    if (err) {
+      console.error('Error writing the URLs file:', err);
+    } else {
+      console.log('URLs file has been saved.');
     }
   });
 });

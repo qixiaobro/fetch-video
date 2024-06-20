@@ -2,7 +2,7 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 
 // 读取HTML文件
-fs.readFile('./test.html', 'utf8', (err, htmlData) => {
+fs.readFile('./output/trailer.html', 'utf8', (err, htmlData) => {
   if (err) {
     console.error('Error reading the HTML file:', err);
     return;
@@ -19,6 +19,7 @@ fs.readFile('./test.html', 'utf8', (err, htmlData) => {
     const image = $element.find('img').attr('src');
     let url = $element.find('#wc-endpoint').attr('href');
     const title = $element.find('#video-title').text().trim().replace(/\s+/g, ' ').replace(/\n/g, '');
+    const byline = $element.find('#byline').text().trim();
     let timeParts = $element.find('.badge-shape-wiz__text').text().split(':');
     const timeInSeconds = parseInt(timeParts[0], 10) * 60 + parseInt(timeParts[1], 10);
 
@@ -32,6 +33,7 @@ fs.readFile('./test.html', 'utf8', (err, htmlData) => {
       image,
       url,
       title,
+      author: byline,
       time: timeInSeconds
     });
 
@@ -46,7 +48,7 @@ fs.readFile('./test.html', 'utf8', (err, htmlData) => {
       console.log('JSON file has been saved.');
     }
   });
-  
+
   // 将所有URL保存到txt文件，每个URL一行
   fs.writeFile('urls.txt', urls.join('\n'), (err) => {
     if (err) {
